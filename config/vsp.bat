@@ -1,0 +1,1 @@
+dmcmd4vsp.exe --PNAME="gameserver.exe" --INDEX=1
