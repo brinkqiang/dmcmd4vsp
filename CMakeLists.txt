@@ -10,13 +10,12 @@ ModuleSetWinCompilerFlags()
 
 ModuleInclude("dmformat" "thirdparty/dmformat")
 ModuleImport("dmflags" "thirdparty/dmflags")
+ModuleImport("dmtimer" "thirdparty/dmtimer")
 LibImport("execute_module" "src/execute_module")
-ExeImport("tools" "execute_module;dmflags")
-
-SUBDIRLIST(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR}/config)
+ExeImport("tools" "execute_module;dmflags;dmtimer")
 
 FILE(GLOB SUBDIRS
-  "config/*.*"
+  "${CMAKE_CURRENT_SOURCE_DIR}/config/*.*"
 )
 ADD_CUSTOM_COMMAND(
     TARGET dmcmd4vsp
