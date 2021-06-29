@@ -7,7 +7,6 @@
 
 DEFINE_string(PNAME, "dmconfigserver.exe", "process name");
 DEFINE_int64(INDEX, 1, "index=1-255");
-DEFINE_string(CMD, "start", "CMD={start,stop}");
 DEFINE_int64(TIME, 3600, "TIME={second}");
 int main( int argc, char* argv[] )
 {
