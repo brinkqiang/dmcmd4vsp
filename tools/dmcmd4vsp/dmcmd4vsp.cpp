@@ -132,6 +132,7 @@ public:
         {
         case eTimerID_STOP:
         {
+            KillTimer(qwIDEvent);
             DispatchVsp();
             Stop();
         }

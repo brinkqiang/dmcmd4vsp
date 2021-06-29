@@ -88,8 +88,9 @@ std::string DMAPI Cexecute_module::exec(const std::string& strCmd)
     uint32_t start = GetTickCount32();
     std::string strRet = DMExecute(strCmd.c_str());
     uint32_t end = GetTickCount32();
-    std::cout << strRet << std::endl;
-    std::cout << end - start << " ms" << std::endl;
+    std::cout << "cmd = " << strCmd << std::endl;
+    std::cout << "ret = " << strRet << std::endl;
+    std::cout << "cost = " << end - start << " ms" << std::endl;
 
     return strRet;
 }
