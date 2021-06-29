@@ -8,7 +8,7 @@
 DEFINE_string(PNAME, "dmconfigserver.exe", "process name");
 DEFINE_int64(INDEX, 1, "index=1-255");
 DEFINE_string(CMD, "start", "CMD={start,stop}");
-
+DEFINE_int64(TIME, 3600, "TIME={second}");
 int main( int argc, char* argv[] )
 {
     Iexecute* execute = executeGetModule();
@@ -59,6 +59,8 @@ int main( int argc, char* argv[] )
         std::string strVspCmd = fmt::format(strVsp, "start", FLAGS_INDEX, PID,
                                             strVSpath);
         std::string strVspRet = execute->exec(strVspCmd);
+
+        SleepMs(FLAGS_TIME*1000);
 
         std::string strVspStop =
             R"(VSDiagnostics.exe {} {} /output:{})";
