@@ -1,21 +1,41 @@
 
 #include "execute.h"
+#include "dmutil.h"
 #include "dmlog.hpp"
 #include "dmstrtk.hpp"
-#include "dmutil.h"
 #include "dmflags.h"
 
 DEFINE_string(PNAME, "dmconfigserver.exe", "process name");
 DEFINE_int64(INDEX, 1, "index=1-255");
 DEFINE_string(CMD, "start", "CMD={start,stop}");
+
 int main( int argc, char* argv[] )
 {
     Iexecute* execute = executeGetModule();
 
     if (NULL != execute)
     {
-        std::string strVSpath =
-            R"(D:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Team Tools\DiagnosticsHub\Collector\AgentConfigs\CPUUsageLow.json)";
+        std::string strVSpathFmt =
+            R"({}:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Team Tools\DiagnosticsHub\Collector\AgentConfigs\CPUUsageLow.json)";
+        std::string strVSpath;
+
+        for (char a = 'C'; a <= 'Z'; a++)
+        {
+            auto path = fmt::format(strVSpathFmt, a);
+
+            if (DMIsFileExist(path))
+            {
+                strVSpath = path;
+                break;
+            }
+        }
+
+        if (strVSpath.empty())
+        {
+            fmt::print("{} {}", "cann't find", strVSpathFmt);
+            return -1;
+        }
+
         std::string strJson = R"(CpuUsageLow.json)";
 
         std::string strPath = getenv("path");
