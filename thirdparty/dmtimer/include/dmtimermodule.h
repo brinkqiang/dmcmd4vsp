@@ -27,23 +27,27 @@
 #include "dmtimernode.h"
 
 #ifdef WIN32
-struct timezone {
+struct timezone
+{
     int  tz_minuteswest; /* minutes W of Greenwich */
     int  tz_dsttime;     /* type of dst correction */
 };
 
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
 
-typedef union {
+typedef union
+{
     uint64_t ft_scalar;
     FILETIME ft_struct;
 } FT;
 
-static inline int gettimeofday(struct timeval* tv, struct timezone* tz) {
+static inline int gettimeofday(struct timeval* tv, struct timezone* tz)
+{
     FT ft;
     static int tzflag = 0;
 
-    if (NULL != tv) {
+    if (NULL != tv)
+    {
         GetSystemTimeAsFileTime(&ft.ft_struct);
         ft.ft_scalar /= 10;
         ft.ft_scalar -= DELTA_EPOCH_IN_MICROSECS;
@@ -51,8 +55,10 @@ static inline int gettimeofday(struct timeval* tv, struct timezone* tz) {
         tv->tv_usec = (long)(ft.ft_scalar % 1000000UL);
     }
 
-    if (NULL != tz) {
-        if (!tzflag) {
+    if (NULL != tz)
+    {
+        if (!tzflag)
+        {
             _tzset();
             tzflag++;
         }
@@ -63,10 +69,12 @@ static inline int gettimeofday(struct timeval* tv, struct timezone* tz) {
 
     return 0;
 }
-
+#else
+#include <sys/time.h>
 #endif
 
-static inline uint32_t GetTickCount32() {
+static inline uint32_t GetTickCount32()
+{
     //auto now = std::chrono::system_clock::now();
     //auto now = std::chrono::steady_clock::now();
     //auto now = std::chrono::high_resolution_clock::now();
@@ -80,36 +88,42 @@ static inline uint32_t GetTickCount32() {
 #endif
 }
 
-class CDMTimeElapse {
-  public:
-    CDMTimeElapse() {
+class CDMTimeElapse
+{
+public:
+    CDMTimeElapse()
+    {
         Start();
     }
 
-    inline void Start() {
+    inline void Start()
+    {
         m_dwStart = GetTickCount32();
     }
 
-    inline uint32_t End() {
+    inline uint32_t End()
+    {
         return GetTickCount32() - m_dwStart;
     }
 
-  private:
+private:
     uint32_t m_dwStart;
 };
 
 
-class CDMTimerModule : public CDMSafeSingleton<CDMTimerModule> {
-  public:
+class CDMTimerModule : public CDMSafeSingleton<CDMTimerModule>
+{
+public:
     friend class CDMSafeSingleton<CDMTimerModule>;
 
-    enum {
+    enum
+    {
         eMAX_POOL_S = 50000,
         eMAX_POOL_I = 1000,
         eMAX_TIME_COUNT = eMAX_POOL_S * eMAX_POOL_I,
     };
 
-  public:
+public:
     CDMTimerModule();
 
     virtual ~CDMTimerModule();
@@ -125,20 +139,21 @@ class CDMTimerModule : public CDMSafeSingleton<CDMTimerModule> {
 
     void AddTimerElement( CDMTimerElement* pElement );
     void RemoveTimerElement( CDMTimerElement* pElement );
-  public:
+public:
     uint64_t GetBootTime();
 
     void    SetTimerInfo(uint64_t qwIDEvent, const std::string& strTimerObjName);
     void    DelTimerInfo();
 
-  private:
+private:
     void    __ReleaseElement( struct list_head* head );
     int     __Cascade( TVec* tv, int idx );
     bool    __TimerPending( CDMTimerElement* pElement );
 
     CDMTimerElement* __GetTimerInfoByEntry( list_head* head );
-  private:
-    typedef CDynamicRapidPool<CDMTimerElement, eMAX_POOL_S, eMAX_POOL_I> TimerElementPool;
+private:
+    typedef CDynamicRapidPool<CDMTimerElement, eMAX_POOL_S, eMAX_POOL_I>
+    TimerElementPool;
 
     TimerElementPool m_oTimerElementPool;
 

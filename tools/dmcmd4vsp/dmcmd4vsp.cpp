@@ -79,10 +79,10 @@ public:
 
             auto env = getenv("path");
             auto path = fmt::format("path={};{}", env, strVSpath);
-            putenv(path.c_str());
+            putenv((char*)path.c_str());
 
             std::string strVsp =
-                R"(VSDiagnostics.exe {} {} /attach:{} /loadConfig:"{}")";
+                R"(VSDiagnostics {} {} /attach:{} /loadConfig:"{}")";
             std::string strConfigVsp = DMGetRootPath() + PATH_DELIMITER_STR + FLAGS_CONFIG;
             std::string strVspCmd = fmt::format(strVsp, "start", FLAGS_INDEX,PID,
                                                 strConfigVsp);
