@@ -45,14 +45,14 @@ public:
         if (NULL != m_execute)
         {
             std::string strVSpathFmt =
-                R"({}:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Team Tools\DiagnosticsHub\Collector\AgentConfigs\CPUUsageLow.json)";
+                R"({}:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Team Tools\DiagnosticsHub\Collector)";
             std::string strVSpath;
 
             for (char a = 'C'; a <= 'Z'; a++)
             {
                 auto path = fmt::format(strVSpathFmt, a);
 
-                if (DMIsFileExist(path))
+                if (DMIsDirectory(path.c_str()))
                 {
                     strVSpath = path;
                     break;
@@ -77,11 +77,15 @@ public:
 
             auto PID = fmt::to_number(strRet);
 
+            auto env = getenv("path");
+            auto path = fmt::format("path={};{}", env, strVSpath);
+            putenv(path.c_str());
+
             std::string strVsp =
                 R"(VSDiagnostics.exe {} {} /attach:{} /loadConfig:"{}")";
-
-            std::string strVspCmd = fmt::format(strVsp, "start", FLAGS_INDEX, PID,
-                                                strVSpath);
+            std::string strConfigVsp = DMGetRootPath() + PATH_DELIMITER_STR + FLAGS_CONFIG;
+            std::string strVspCmd = fmt::format(strVsp, "start", FLAGS_INDEX,PID,
+                                                strConfigVsp);
             std::string strVspRet = m_execute->exec(strVspCmd);
 
             SetTimer(eTimerID_STOP, FLAGS_TIME*1000);
