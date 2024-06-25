@@ -26,6 +26,5 @@ dmcmd4vsp
 ```cpp
 ```
 ## Contacts
-[![Join the chat](https://badges.gitter.im/brinkqiang/dmcmd4vsp/Lobby.svg)](https://gitter.im/brinkqiang/dmcmd4vsp)
 
 ## Thanks
